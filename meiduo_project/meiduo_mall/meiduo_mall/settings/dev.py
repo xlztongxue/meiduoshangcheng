@@ -50,33 +50,37 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 注册定时任务
-    'django_crontab',
+    # 跨域模块
+    'corsheaders'
     # 全文检索
     'haystack',
     # 注册用户模块
-    'users',
+    'users.apps.UsersConfig',
     # 注册首页广告模块
-    'contents',
+    'contents.apps.ContentsConfig',
     # 注册验证图形码 可以不注册，需要迁移和模板的才需要注册
-    'verifications',
+    'verifications.apps.VerificationsConfig',
     # 注册第三方登录
-    'oauth',
+    'oauth.apps.OauthConfig',
     # 注册三级联动
-    'areas',
+    'areas.apps.AreasConfig',
     # 注册商品模块
-    'goods',
+    'goods.apps.GoodsConfig',
     # 订单
-    'orders',
+    'orders.apps.OrdersConfig',
     # 支付宝支付
-    'payment',
+    'payment.apps.PaymentConfig',
+    # 把美多后台当作子应用注册到项目当中
+    'meiduo_admin.apps.MeiduoAdminConfig',
     # 注册前端框架模块
     'rest_framework',
-    # 用户后台管理模块
-    'meiduo_admin.apps.MeiduoAdminConfig'
+    # 注册定时任务
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
+    # 注意：跨域问题中间件添加到中间件的第一个
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -346,3 +350,15 @@ REST_FRAMEWORK = {
     # 指定DRF框架的异常处理函数
     'EXCEPTION_HANDLER': 'meiduo_admin.utils.exceptions.exception_handler',
 }
+
+# CORS跨域请求设置
+CORS_ORIGIN_WHITELIST = (
+    # 备注：允许源地址`http://127.0.0.1:8080`向当前API服务器发起跨域请求
+    '127.0.0.1:8080',
+    '127.0.0.1:8000',
+    'localhost:8000',
+    'localhost:8001',
+    'www.meiduo.site:8000',
+    'api.meiduo.site:8000',
+)
+CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
