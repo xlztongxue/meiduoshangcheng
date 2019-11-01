@@ -76,6 +76,8 @@ INSTALLED_APPS = [
     'rest_framework',
     # 注册定时任务
     'django_crontab',
+    # 跨域模块
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
@@ -351,11 +353,12 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'meiduo_admin.utils.exceptions.exception_handler',
 }
 
-# CORS跨域请求设置
+# CORS跨域请求设置白名单
+# 允许哪些路由跨域访问
 CORS_ORIGIN_WHITELIST = (
-    # 备注：允许源地址`http://127.0.0.1:8080`向当前API服务器发起跨域请求
-    '127.0.0.1:8080',
-    '127.0.0.1:8000',
+    # 备注：允许源地址`http://192.168.152.12:8080`向当前API服务器发起跨域请求
+    'http://127.0.0.1:8080',
+    'http://192.168.152.12:8000',
     'localhost:8000',
     'localhost:8001',
     'www.meiduo.site:8000',
