@@ -85,7 +85,8 @@ class SMSCodeView(View):
 
         # 执行异步任务发短信（使用celery发送短信验证）
         # send_sms_code(mobile, sms_code) 错误写法
-        send_sms_code.delay(mobile, sms_code) # 正确的语法
+
+        # send_sms_code.delay(mobile, sms_code) # 正确的语法
 
         # 响应短信验证码
         print("发送成功")

@@ -307,14 +307,14 @@ EMAIL_VERIFT_URL = 'http://www.meiduo.site:8000/email/verification/'
 DEFAULT_FILE_STORAGE = 'meiduo_mall.utils.fastdfs.fdfs_storage.FastDFSStorage'
 
 # FastDFS相关参数
-FDFS_BASE_URL = 'http://192.168.152.10:8000/'
+FDFS_BASE_URL = 'http://192.168.152.12:8080/'
 
 # Haystack
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
         # Elasticsearch服务器ip地址，端口号固定为9200
-        'URL': 'http://192.168.152.10:9200/',
+        'URL': 'http://192.168.152.12:9200/',
         # Elasticsearch建立的索引库的名称
         'INDEX_NAME': 'meiduo_mall',
     },

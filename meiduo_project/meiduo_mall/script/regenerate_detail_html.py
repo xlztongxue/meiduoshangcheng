@@ -1,5 +1,5 @@
 # 1.指定Python脚本解析器
-#!/home/python/.virtualenvs/meiduo_mall/bin/ python
+#!/home/xlz/.conda/envs/mei_d/bin/python3.6
 
 # 2.添加Python脚本导包路径
 import sys

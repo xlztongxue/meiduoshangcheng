@@ -1,5 +1,7 @@
 from datetime import datetime
+from django.db.models import Q
 from rest_framework import serializers
+from meiduo_admin.utils.repayload import jwt_data_hander
 from users.models import User
 
 
@@ -29,43 +31,23 @@ class AdminAuthSerializer(serializers.ModelSerializer):
         username = attrs['username']
         password = attrs['password']
 
-        # 进行用户名和密码校验
-        try:
-            user = User.objects.get(username=username, is_staff=True)
-        except User.DoesNotExist:
+        # 进行用户名和密码校验,添加邮箱验证
+        user = User.objects.filter(Q(username=username) | Q(email=username), is_staff=True).first()
+        # 校验密码
+        if not user or not user.check_password(password):
             raise serializers.ValidationError('用户名或密码错误')
-        else:
-            # 校验密码
-            if not user.check_password(password):
-                raise serializers.ValidationError('用户名或密码错误')
-
             # 给attrs中添加user属性，保存登录用户
-            attrs['user'] = user
+        attrs['user'] = user
 
         return attrs
 
     def create(self, validated_data):
         # 获取登录用户user
         user = validated_data['user']
-
         # 设置最新登录时间
         user.last_login = datetime.now()
         user.save()
-
         # 服务器生成jwt token, 保存当前用户的身份信息
-        from rest_framework_jwt.settings import api_settings
-
-        # 组织payload数据的方法
-        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-        # 生成jwt token数据的方法
-        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-
-        # 组织payload数据
-        payload = jwt_payload_handler(user)
-        # 生成jwt token
-        token = jwt_encode_handler(payload)
-
-        # 给user对象增加属性，保存jwt token的数据
-        user.token = token
+        user = jwt_data_hander(user)
 
         return user

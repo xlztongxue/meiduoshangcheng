@@ -28,6 +28,7 @@ logger = logging.getLogger('django')
 
 class ChangePasswordView(LoginRequiredMixin, View):
     """修改密码"""
+
     def get(self, request):
         """展示修改密码界面"""
         return render(request, 'user_center_pass.html')
@@ -68,6 +69,7 @@ class ChangePasswordView(LoginRequiredMixin, View):
 
 class UserBrowseHistory(LoginRequestJSONMixin, View):
     """用户浏览记录"""
+
     def get(self, request):
         """查询用户浏览记录"""
         # 接收参数
@@ -91,7 +93,7 @@ class UserBrowseHistory(LoginRequestJSONMixin, View):
                 'id': sku.id,
                 'name': sku.name,
                 'price': sku.price,
-                'default_image_url':sku.default_image.url
+                'default_image_url': sku.default_image.url
             })
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'OK', 'skus': skus})
 
@@ -118,7 +120,6 @@ class UserBrowseHistory(LoginRequestJSONMixin, View):
         # # 最后截取
         # pl.ltrim('history_%s' % user.id, 0, 4)
 
-
         # 方法二 用有序集合存储
 
         pl.zadd('history_%s' % user.id, {sku_id: time.time()})
@@ -127,7 +128,6 @@ class UserBrowseHistory(LoginRequestJSONMixin, View):
         pl.execute()
         # 响应结果
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'OK'})
-
 
 
 class UpdateTitleAddressView(LoginRequestJSONMixin, View):
@@ -156,7 +156,6 @@ class UpdateTitleAddressView(LoginRequestJSONMixin, View):
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': '修改标题成功'})
 
 
-
 class DefaultAddressView(LoginRequestJSONMixin, View):
     """设置默认地址"""
 
@@ -177,6 +176,7 @@ class DefaultAddressView(LoginRequestJSONMixin, View):
 
 class UpdateDestoryAdressView(LoginRequestJSONMixin, View):
     """更新地址"""
+
     def put(self, request, address_id):
         """
         更新地址
@@ -249,7 +249,7 @@ class UpdateDestoryAdressView(LoginRequestJSONMixin, View):
             address.save()
         except Exception as e:
             logger.error(e)
-            return  http.JsonResponse({'code': RETCODE.DBERR, 'errmsg': '删除地址失败'})
+            return http.JsonResponse({'code': RETCODE.DBERR, 'errmsg': '删除地址失败'})
 
         # 响应结果
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': '删除地址成功'})
@@ -314,12 +314,13 @@ class CreateAddressView(LoginRequestJSONMixin, View):
             "email": address.email
         }
         # 面向对象的思想，把地址传给前端
-        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': '新增地址成功', 'address':address_dict})
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': '新增地址成功', 'address': address_dict})
         # return http.JsonResponse({'code': RETCODE.OK, 'errmsg': '新增地址成功', 'address': json_dict})
 
 
 class AddressView(LoginRequiredMixin, View):
     """用户收货地址"""
+
     def get(self, request):
         # 获取用户地址列表
         login_user = request.user
@@ -344,7 +345,7 @@ class AddressView(LoginRequiredMixin, View):
             }
             address_dict_list.append(address_dict)
         # 构造上下文
-        context={
+        context = {
             'default_address_id': login_user.default_address_id,
             'addresses': address_dict_list,
 
@@ -363,6 +364,74 @@ class RegisterView(View):
         :return: 注册页面
         """
         return render(request, 'register.html')
+
+
+    def post(self, request):
+        """
+        实现用户注册逻辑
+        :param request: 请求对象
+        :return: 注册结果
+        """
+        # 接受参数
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        password2 = request.POST.get('password2')
+        mobile = request.POST.get('mobile')
+        sms_code_client = request.POST.get('sms_code')
+        allow = request.POST.get('allow')
+
+        # 校验参数:前后端的校验需要分开，避免恶意用户越过前端发请求，
+        # 要保证后端的安全，前后端的校验逻辑相同
+        # 判断参数是否齐全
+        # all(列表)回去校验列表中的元素是否为空，只要有一个为空，返回false
+        if not all([username, password, password2, mobile, sms_code_client, allow]):
+            return HttpResponseForbidden("缺少必传参数")
+        # 判断用户名是否是5-20个字符重复
+        if not re.match(r'^[a-zA-Z0-9_-]{5,20}$', username):
+            return HttpResponseForbidden("请输入5-20个字符的用户名")
+        # 判断密码是否是8-20个字符
+        if not re.match(r'^[a-zA-Z0-9]{8,20}$', password):
+            return HttpResponseForbidden("请输入8-20个字符的密码")
+        # 判断两次输入的密码是否一致
+        if password != password2:
+            return HttpResponseForbidden("再次输入的密码不一致")
+        # 判断手机号码是否合法
+        if not re.match(r'^1[3-9]\d{9}$', mobile):
+            return HttpResponseForbidden("请输入正确的手机号码")
+
+        # 判断短信验证码是否输入正确
+        try:
+            redis_conn = get_redis_connection('verify_code')
+            sms_code_server = redis_conn.get('sms_%s' % mobile)
+        except Exception as e:
+            logger.error(e)
+        if sms_code_server is None:
+            return render(request, 'register.html', {'register_errmsg': '短信验证码已经失效'})
+        if sms_code_server.decode() != sms_code_client:
+            return render(request, 'register.html', {'register_errmsg': '短信验证码输入有误'})
+
+        # 判断用户是否勾选了协议
+        if allow != "on":
+            return HttpResponseForbidden("请勾选用户协议")
+
+        # 保存注册数据，是注册业务的核心
+        try:
+            user = User.objects.create_user(username=username, password=password, mobile=mobile)
+        except DatabaseError as e:
+            logger.error(e)
+            return render(request, 'register.html', {'register_errmsg': '注册失败'})
+
+        # 状态保持
+        login(request, user)
+
+        # 响应结果：重定向到首页
+        # 为了实现在首页的右上角展示用户名信息，我们需要将用户名缓存到cookie中
+        response = redirect(reverse('contents:index'))
+        response.set_cookie('username', user.username, max_age=3600 * 24 * 15)
+        # 若用户登录成功，合并cookie中的购物车
+        merge_carts_cookies_redis(request=request, user=user, response=response)
+        # 响应结果
+        return response
 
 
 class LoginView(View):
@@ -535,69 +604,4 @@ class MobilesCountView(View):
         # 响应结果
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'OK', 'count': count})
 
-    def post(self, request):
-        """
-        实现用户注册逻辑
-        :param request: 请求对象
-        :return: 注册结果
-        """
-        # 接受参数
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        password2 = request.POST.get('password2')
-        mobile = request.POST.get('mobile')
-        sms_code_client = request.POST.get('sms_code')
-        allow = request.POST.get('allow')
 
-        # 校验参数:前后端的校验需要分开，避免恶意用户越过前端发请求，
-        # 要保证后端的安全，前后端的校验逻辑相同
-        # 判断参数是否齐全
-        # all(列表)回去校验列表中的元素是否为空，只要有一个为空，返回false
-        if not all([username, password, password2, mobile, sms_code_client, allow]):
-            return HttpResponseForbidden("缺少必传参数")
-        # 判断用户名是否是5-20个字符重复
-        if not re.match(r'^[a-zA-Z0-9_-]{5,20}$', username):
-            return HttpResponseForbidden("请输入5-20个字符的用户名")
-        # 判断密码是否是8-20个字符
-        if not re.match(r'^[a-zA-Z0-9]{8,20}$', password):
-            return HttpResponseForbidden("请输入8-20个字符的密码")
-        # 判断两次输入的密码是否一致
-        if password != password2:
-            return HttpResponseForbidden("再次输入的密码不一致")
-        # 判断手机号码是否合法
-        if not re.match(r'^1[3-9]\d{9}$', mobile):
-            return HttpResponseForbidden("请输入正确的手机号码")
-
-        # 判断短信验证码是否输入正确
-        try:
-            redis_conn = get_redis_connection('verify_code')
-            sms_code_server = redis_conn.get('sms_%s' % mobile)
-        except Exception as e:
-            logger.error(e)
-        if sms_code_server is None:
-            return render(request, 'register.html', {'register_errmsg': '短信验证码已经失效'})
-        if sms_code_server.decode() != sms_code_client:
-            return render(request, 'register.html', {'register_errmsg': '短信验证码输入有误'})
-
-        # 判断用户是否勾选了协议
-        if allow != "on":
-            return HttpResponseForbidden("请勾选用户协议")
-
-        # 保存注册数据，是注册业务的核心
-        try:
-            user = User.objects.create_user(username=username, password=password, mobile=mobile)
-        except DatabaseError as e:
-            logger.error(e)
-            return render(request, 'register.html', {'register_errmsg': '注册失败'})
-
-        # 状态保持
-        login(request, user)
-
-        # 响应结果：重定向到首页
-        # 为了实现在首页的右上角展示用户名信息，我们需要将用户名缓存到cookie中
-        response = redirect(reverse('contents:index'))
-        response.set_cookie('username', user.username, max_age=3600 * 24 * 15)
-        # 若用户登录成功，合并cookie中的购物车
-        merge_carts_cookies_redis(request=request, user=user, response=response)
-        # 响应结果
-        return response
