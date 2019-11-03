@@ -277,7 +277,7 @@ LOGGING = {
 AUTH_USER_MODEL = 'users.User'
 
 # 指定自定义的用户认证后端
-AUTHENTICATION_BACKENDS = ['users.utils.UsernameMobileBackend']
+AUTHENTICATION_BACKENDS = ['meiduo_mall.utils.authenticate.UsernameMobileBackend']
 
 # 判断用户是否登录未登录
 LOGIN_URL = '/login/'
@@ -358,6 +358,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    # 全局分页类设置,指定分页器
+    'DEFAULT_PAGINATION_CLASS': 'meiduo_admin.utils.pagination.PageNum',
 }
 
 JWT_AUTH = {

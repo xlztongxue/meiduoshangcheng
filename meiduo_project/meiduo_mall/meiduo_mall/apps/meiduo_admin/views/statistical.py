@@ -1,4 +1,6 @@
 from datetime import datetime, date, timedelta
+
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -95,21 +97,19 @@ class UserMonthIncrementView(APIView):
         data_list = get_return_day_count_list(last_month_day, now_day)
         return Response(data_list)
 
+
 # 日分类商品访问量
-class GoodsDayView(APIView):
+class GoodsDayView(ListAPIView):
     # 用户登录验证
     permission_classes = [IsAdminUser]
-    """
-        获取当日分类商品访问量：
-        1. 查询获取当日分类商品访问量
-        2. 将查询数据序列化并返回
-    """
-    def get(self, request):
-        # 1.查询获取当日分类商品访问量
-        now_data = datetime.now().date()
-        good_visit = GoodsVisitCount.objects.filter(date=now_data)
-
-        # 2.将查询数据序列化并返回
-        # 注意many = True别忘了
-        serializer = GoodsVisitSerializer(good_visit, many=True)
-        return Response(serializer.data)
+    # 指定序列化器
+    serializer_class = GoodsVisitSerializer
+    # 指定查询集
+    queryset = GoodsVisitCount.objects.all()
+    # 指定分页器
+    pagination_class = None
+    # 重写查询集方法
+    def get_queryset(self):
+        # 获取今天时间
+        now_date = date.today()
+        return self.queryset.filter(date__gte=now_date)
