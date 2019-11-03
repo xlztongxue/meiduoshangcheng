@@ -416,6 +416,7 @@ class RegisterView(View):
 
         # 保存注册数据，是注册业务的核心
         try:
+            # create_user() 创建用户密码加密
             user = User.objects.create_user(username=username, password=password, mobile=mobile)
         except DatabaseError as e:
             logger.error(e)
