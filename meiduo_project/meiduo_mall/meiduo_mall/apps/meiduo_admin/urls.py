@@ -1,8 +1,8 @@
 from django.conf.urls import url
+from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import obtain_jwt_token
 
-from meiduo_admin.views import users, statistical
-
+from meiduo_admin.views import users, statistical, goods
 
 urlpatterns = [
     # 美多后台用户登录：meiduo_admin/authorizations
@@ -22,8 +22,15 @@ urlpatterns = [
     # 用户管理：GET /meiduo_admin/users/?page=1&pagesize=10&keyword
     url(r'^users/$', users.UserInfoView.as_view()),
 
-
 ]
+
+# 商品规格信息自动生成路由
+router = DefaultRouter()
+# 生成路由
+router.register('goods/specs/', goods.SpecsViewSet, base_name='specs')
+# 导入到原有路由列表中
+urlpatterns += router.urls
+
 
 
 
