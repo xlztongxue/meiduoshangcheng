@@ -15,7 +15,8 @@ urlpatterns = [
     url(r'statistical/day_orders/$', statistical.UserDayOrdersView.as_view()),
     # 月增用户统计：GET /meiduo_admin/statistical/month_increment/
     url(r'statistical/month_increment/$', statistical.UserMonthIncrementView.as_view()),
-    # 日分类增用户统计GET /meiduo_admin/statistical/month_increment/
+    # 日分类增用户统计：GET /meiduo_admin/statistical/goods_day_views/
+    url(r'statistical/goods_day_views/$', statistical.GoodsDayView.as_view()),
 
 
 ]

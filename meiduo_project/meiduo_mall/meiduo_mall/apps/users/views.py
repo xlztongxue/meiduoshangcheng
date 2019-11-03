@@ -122,7 +122,7 @@ class UserBrowseHistory(LoginRequestJSONMixin, View):
 
         # 方法二 用有序集合存储
 
-        pl.zadd('history_%s' % user.id, {sku_id: time.time()})
+        pl.zadd('history_%s' % user.id, **{sku_id: time.time()})
 
         # 执行结果
         pl.execute()

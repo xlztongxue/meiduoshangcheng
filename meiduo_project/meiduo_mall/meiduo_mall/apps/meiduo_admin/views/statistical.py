@@ -3,6 +3,8 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from goods.models import GoodsVisitCount
+from meiduo_admin.serializers.statistical import GoodsVisitSerializer
 from meiduo_admin.utils.gettime import get_last_month_day, get_return_day_count_list
 from meiduo_admin.utils.repayload import response_date
 from users.models import User
@@ -92,3 +94,22 @@ class UserMonthIncrementView(APIView):
         last_month_day = get_last_month_day(now_day)
         data_list = get_return_day_count_list(last_month_day, now_day)
         return Response(data_list)
+
+# 日分类商品访问量
+class GoodsDayView(APIView):
+    # 用户登录验证
+    permission_classes = [IsAdminUser]
+    """
+        获取当日分类商品访问量：
+        1. 查询获取当日分类商品访问量
+        2. 将查询数据序列化并返回
+    """
+    def get(self, request):
+        # 1.查询获取当日分类商品访问量
+        now_data = datetime.now().date()
+        good_visit = GoodsVisitCount.objects.filter(date=now_data)
+
+        # 2.将查询数据序列化并返回
+        # 注意many = True别忘了
+        serializer = GoodsVisitSerializer(good_visit, many=True)
+        return Response(serializer.data)
