@@ -19,15 +19,25 @@ urlpatterns = [
     url(r'statistical/month_increment/$', statistical.UserMonthIncrementView.as_view()),
     # 日分类增用户统计：GET /meiduo_admin/statistical/goods_day_views/
     url(r'statistical/goods_day_views/$', statistical.GoodsDayView.as_view()),
+
     # 用户管理：GET /meiduo_admin/users/?page=1&pagesize=10&keyword
     url(r'^users/$', users.UserInfoView.as_view()),
 
+    # 用户管理规格搜索路由表
+    url(r'goods/simple/$', goods.SpecsViewSet.as_view({'get':'simple'})),
+
+    # 用户管理图片表搜素路由
+    url(r'skus/simple/$', goods.ImagesViewSet.as_view({'get':'simple'})),
+
 ]
 
-# 商品规格信息自动生成路由
+# 自动生成路由
 router = DefaultRouter()
 # 生成路由
-router.register('goods/specs/', goods.SpecsViewSet, base_name='specs')
+# 商品规格信息
+router.register('goods/specs', goods.SpecsViewSet, base_name='specs')
+# 图片表管理
+router.register('skus/images', goods.ImagesViewSet, base_name='image')
 # 导入到原有路由列表中
 urlpatterns += router.urls
 
