@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from goods.models import SPUSpecification, SKUImage, SKU
+from goods.models import SPUSpecification
 from goods.models import SPU
 
 class SpecsSerialzier(serializers.ModelSerializer):
@@ -20,17 +20,4 @@ class SPUSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 
-class SkuImageSerialzier(serializers.ModelSerializer):
-    """SKU图片序列化器"""
-    sku_id = serializers.IntegerField()
-    class Meta:
-        model = SKUImage
-        fields = ('__all__')
-
-
-class SKUSerializer(serializers.ModelSerializer):
-    """SKU序列化器"""
-    class Meta:
-        model = SKU
-        fields = ('__all__')
 

@@ -307,7 +307,7 @@ EMAIL_VERIFT_URL = 'http://www.meiduo.site:8000/email/verification/'
 DEFAULT_FILE_STORAGE = 'meiduo_mall.utils.fastdfs.fdfs_storage.FastDFSStorage'
 
 # FastDFS相关参数
-FDFS_BASE_URL = 'http://192.168.152.12:8080/'
+FDFS_BASE_URL = 'http://192.168.152.12:8888/'
 
 # Haystack
 HAYSTACK_CONNECTIONS = {
@@ -377,15 +377,12 @@ CORS_ORIGIN_WHITELIST = (
     # 备注：允许源地址`http://127.0.0.0.1:8080`向当前API服务器发起跨域请求
     '127.0.0.1:8080',
     '192.168.152.12:8000',
-    # 'localhost:8000',
-    # 'localhost:8001',
-    # 'www.meiduo.site:8000',
+    'www.meiduo.site:8000',
     # 'api.meiduo.site:8000',
 )
 # 允许携带cookie
 CORS_ALLOW_CREDENTIALS = True
 
 
-
-
+FASTDES_PATH = os.path.join(BASE_DIR, 'utils/fastdfs/client.conf')
 

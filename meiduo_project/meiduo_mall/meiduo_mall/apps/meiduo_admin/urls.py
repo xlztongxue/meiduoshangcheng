@@ -2,7 +2,7 @@ from django.conf.urls import url
 from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import obtain_jwt_token
 
-from meiduo_admin.views import users, statistical, goods
+from meiduo_admin.views import users, statistical, specs, channels, images
 
 urlpatterns = [
     # 美多后台用户登录：meiduo_admin/authorizations
@@ -24,10 +24,12 @@ urlpatterns = [
     url(r'^users/$', users.UserInfoView.as_view()),
 
     # 用户管理规格搜索路由表
-    url(r'goods/simple/$', goods.SpecsViewSet.as_view({'get':'simple'})),
+    url(r'goods/simple/$', specs.SpecsViewSet.as_view({'get': 'simple'})),
 
     # 用户管理图片表搜素路由
-    url(r'skus/simple/$', goods.ImagesViewSet.as_view({'get':'simple'})),
+    url(r'skus/simple/$', images.ImagesViewSet.as_view({'get': 'simple'})),
+
+
 
 ]
 
@@ -35,9 +37,11 @@ urlpatterns = [
 router = DefaultRouter()
 # 生成路由
 # 商品规格信息
-router.register('goods/specs', goods.SpecsViewSet, base_name='specs')
+router.register('goods/specs', specs.SpecsViewSet, base_name='specs')
 # 图片表管理
-router.register('skus/images', goods.ImagesViewSet, base_name='image')
+router.register('skus/images', images.ImagesViewSet, base_name='image')
+# 商品频道管理
+router.register('goods/channels', channels.ChannelsViewSet, base_name='channels')
 # 导入到原有路由列表中
 urlpatterns += router.urls
 

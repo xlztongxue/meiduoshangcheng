@@ -46,7 +46,7 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """创建并保存新用户数据"""
         # 密码加密
-        # 方法一
+        # # 方法一
         # user = super().create(validated_data)
         # user.set_password(validated_data['password'])
         # user.save()
