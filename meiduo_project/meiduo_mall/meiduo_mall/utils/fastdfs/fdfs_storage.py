@@ -51,6 +51,7 @@ class FastDFSStorage(Storage):
 
         return file_id
 
+
     def exists(self, name):
         """
         判断上传文件的名称和文件系统中原有的文件名是否冲突

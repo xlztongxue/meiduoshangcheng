@@ -7,7 +7,7 @@ from meiduo_admin.serializers.images import SkuImageSerialzier, SKUSerializer
 
 
 class ImagesViewSet(ModelViewSet):
-    # 用户登录
+    # 验证用户登录
     permission_classes = [IsAdminUser]
     # 1.指定查询集
     queryset = SKUImage.objects.all().order_by('id')
@@ -22,3 +22,4 @@ class ImagesViewSet(ModelViewSet):
         ser = SKUSerializer(skus, many=True)
         # 返回结果
         return Response(ser.data)
+

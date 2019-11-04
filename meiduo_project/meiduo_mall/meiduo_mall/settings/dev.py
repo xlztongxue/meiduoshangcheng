@@ -135,7 +135,7 @@ DATABASES = {
     },
     'slave': { # 从机
                 'ENGINE': 'django.db.backends.mysql', # 数据库引擎
-                'HOST': '127.0.0.1', # 数据库从机
+                'HOST': '192.168.152.12', # 数据库从机
                 'PORT': 3307, # 数据库端口
                 'USER': 'root', # 数据库用户名
                 'PASSWORD': '123456', # 数据库用户密码

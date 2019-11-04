@@ -29,6 +29,14 @@ urlpatterns = [
     # 用户管理图片表搜素路由
     url(r'skus/simple/$', images.ImagesViewSet.as_view({'get': 'simple'})),
 
+    # 用户频道组名搜索
+    url(r'goods/channel_types/$', channels.ChannelsViewSet.as_view({'get': 'get_channel_types'})),
+
+    # 用户分类ID搜索
+    url(r'goods/categories/$', channels.ChannelsViewSet.as_view({'get': 'get_first_categories'})),
+
+
+
 
 
 ]
