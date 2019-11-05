@@ -22,10 +22,3 @@ class ChannelGroupSerializer(serializers.ModelSerializer):
         model = GoodsChannelGroup
         fields = ('id', 'name')
 
-
-
-class FirstCategoriesSerializer(serializers.ModelSerializer):
-    """商品类别"""
-    class Meta:
-        model = GoodsCategory
-        exclude = ('create_time', 'update_time', 'parent')

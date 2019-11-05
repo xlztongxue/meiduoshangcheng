@@ -3,7 +3,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from goods.models import GoodsChannel, GoodsChannelGroup, GoodsCategory
-from meiduo_admin.serializers.channels import ChannelSerializer, FirstCategoriesSerializer, ChannelGroupSerializer
+from meiduo_admin.serializers.categorys import CategoriesSerializer
+from meiduo_admin.serializers.channels import ChannelSerializer, ChannelGroupSerializer
 
 
 class ChannelsViewSet(ModelViewSet):
@@ -30,6 +31,6 @@ class ChannelsViewSet(ModelViewSet):
         # 查询一级分类ID
         channel_type = GoodsCategory.objects.filter(parent=None)
         # 序列化返回数据
-        ser = FirstCategoriesSerializer(channel_type, many=True)
+        ser = CategoriesSerializer(channel_type, many=True)
         # 返回结果
         return Response(ser.data)

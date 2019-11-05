@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from goods.models import SpecificationOption, SPUSpecification
-from meiduo_admin.serializers.options import OptionSerializer, SpuSerializer
+from meiduo_admin.serializers.options import OptionSerializer, SpuSpecificationSerializer
 
 
 class OptionsViewSet(ModelViewSet):
@@ -21,7 +21,7 @@ class OptionsViewSet(ModelViewSet):
         # 查询规格选项商品
         spus = SPUSpecification.objects.all()
         # 序列化返回数据
-        ser = SpuSerializer(spus, many=True)
+        ser = SpuSpecificationSerializer(spus, many=True)
 
         # 返回结果
         return Response(ser.data)

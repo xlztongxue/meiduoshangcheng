@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from goods.models import SKUImage, SKU
+from celery_tasks.static_file.tasks import generate_detail_html
 
 
 class SkuImageSerialzier(serializers.ModelSerializer):
@@ -20,17 +21,22 @@ class SkuImageSerialzier(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """sku商品上传图片保存"""
+        # 方式一
+        # instance = super().create(validated_data)
+        # 方式二
         # 调用ModelSerializer中的create方法
-        sku_image = super().create(validated_data)
-        # 保存上传图片记录
+        instance = super(SkuImageSerialzier, self).create(validated_data)
         sku = SKU.objects.get(id=validated_data['sku'].id)
         # 设置其默认图片
-        sku.default_image = sku_image.image
-        sku.save()
-        return sku_image
+        if not sku.default_image:
+            sku.default_image = instance.image
+            sku.save()
+        generate_detail_html.delay(instance.sku.id)
+        return instance
 
-class SKUSerializer(serializers.ModelSerializer):
-    """SKU序列化器"""
-    class Meta:
-        model = SKU
-        fields = ('__all__')
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        generate_detail_html.delay(instance.sku.id)
+        return instance
+
+

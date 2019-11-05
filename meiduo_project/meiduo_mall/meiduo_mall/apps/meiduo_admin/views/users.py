@@ -15,7 +15,7 @@ class UserInfoView(ListCreateAPIView):
     permission_classes = [IsAdminUser]
     # 指定视图所使用的序列化器类
     serializer_class = UserSerializer
-    queryset = User.objects.filter(is_staff=True).order_by('id')
+    queryset = User.objects.all().order_by('id')
 
     # 重写查询集方法
     def get_queryset(self):

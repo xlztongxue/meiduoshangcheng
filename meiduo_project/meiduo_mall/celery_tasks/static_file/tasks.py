@@ -1,7 +1,8 @@
 # 1.指定Python脚本解析器
 #!/home/xlz/.conda/envs/mei_d/bin/python3.6
 import os
-from django.template import loader
+
+from django.shortcuts import render
 from django.conf import settings
 
 from goods import models
@@ -10,8 +11,8 @@ from goods.utils import get_breadcrumb
 from celery_tasks.main import  celery_app
 
 # 4.编写静态化详情页Python脚本代码
-@celery_app.task(name='generate_static_sku_detail')
-def generate_static_sku_detail_html(sku_id):
+@celery_app.task(name='generate_detail_html')
+def generate_detail_html(sku_id):
     """
     生成静态商品详情页面
     :param sku_id: 商品sku id
@@ -65,15 +66,11 @@ def generate_static_sku_detail_html(sku_id):
         'sku': sku,
         'specs': goods_specs,
     }
+    response = render(None, 'detail.html', context)
 
-    template = loader.get_template('detail.html')
-    html_text = template.render(context)
-    file_path = os.path.join(settings.STATICFILES_DIRS[0], 'detail/'+str(sku_id)+'.html')
-    with open(file_path, 'w') as f:
-        f.write(html_text)
+    file_name = os.path.join(settings.BASE_DIR, 'static/detail/%d.html' % sku.id)
+    # 写文件
+    with open(file_name, 'w') as f1:
+        f1.write(response.content.decode())
 
-if __name__ == '__main__':
-    skus = models.SKU.objects.all()
-    for sku in skus:
-        print(sku.id)
-        generate_static_sku_detail_html(sku.id)
+

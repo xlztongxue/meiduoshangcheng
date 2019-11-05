@@ -1,9 +1,11 @@
+from rest_framework import status
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from goods.models import SKU, SKUImage
-from meiduo_admin.serializers.images import SkuImageSerialzier, SKUSerializer
+from meiduo_admin.serializers.images import SkuImageSerialzier
+from meiduo_admin.serializers.skus import SKUSerializer
 
 
 class ImagesViewSet(ModelViewSet):
@@ -22,4 +24,9 @@ class ImagesViewSet(ModelViewSet):
         ser = SKUSerializer(skus, many=True)
         # 返回结果
         return Response(ser.data)
+
+
+
+
+
 

@@ -2,7 +2,7 @@ from django.conf.urls import url
 from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import obtain_jwt_token
 
-from meiduo_admin.views import users, statistical, specs, channels, images, options
+from meiduo_admin.views import users, statistical, specs, channels, images, options, skus
 
 urlpatterns = [
     # 美多后台用户登录：meiduo_admin/authorizations
@@ -38,6 +38,8 @@ urlpatterns = [
     # 用户规格选项搜索
     url(r'goods/specs/simple/$', options.OptionsViewSet.as_view({'get': 'simple'})),
 
+    # 查询规格信息
+    url(r'^goods/(?P<pk>\d+)/specs/$', skus.SkusViewSet.as_view({'get': 'specs'})),
 
 
 
@@ -55,6 +57,8 @@ router.register('skus/images', images.ImagesViewSet, base_name='image')
 router.register('goods/channels', channels.ChannelsViewSet, base_name='channels')
 # 规格选项管理
 router.register('specs/options', options.OptionsViewSet, base_name='options')
+# SKU表管理
+router.register('skus', skus.SkusViewSet, base_name='skus')
 # 导入到原有路由列表中
 urlpatterns += router.urls
 
