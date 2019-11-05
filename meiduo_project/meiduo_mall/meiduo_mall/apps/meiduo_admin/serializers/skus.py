@@ -23,6 +23,9 @@ class SKUSerializer(serializers.ModelSerializer):
     class Meta:
         model = SKU
         fields = '__all__'
+        read_only_fields = ('spu', 'category')
+
+
     def create(self, validated_data):
         try:
             # 开启事务

@@ -14,6 +14,7 @@ class OptionSerializer(serializers.ModelSerializer):
 
 class SpuSpecSerializer(serializers.ModelSerializer):
     options = OptionSerializer(many=True)
+    spu = serializers.StringRelatedField(read_only=True)
     class Meta:
         model = SPUSpecification
         fields = '__all__'
@@ -21,7 +22,6 @@ class SpuSpecSerializer(serializers.ModelSerializer):
 
 class SpuSpecificationSerializer(SpuSpecSerializer):
     """商品SPU规格序列化器"""
-    spu = serializers.StringRelatedField(read_only=True)
     name = serializers.SerializerMethodField(read_only=True)
     def get_name(self, obj):
         return f'{obj.spu} {obj.name}'

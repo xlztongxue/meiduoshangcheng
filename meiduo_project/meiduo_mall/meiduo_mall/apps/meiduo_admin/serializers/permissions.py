@@ -11,7 +11,7 @@ class PermissionSerializer(serializers.ModelSerializer):
 
 class ContentTypeSerializer(serializers.ModelSerializer):
     """权限类型序列器"""
-    name = serializers.CharField()
+    name = serializers.CharField(read_only=True)
     class Meta:
         model = ContentType
         fields = '__all__'
