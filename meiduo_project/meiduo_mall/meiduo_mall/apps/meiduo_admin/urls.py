@@ -2,7 +2,7 @@ from django.conf.urls import url
 from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import obtain_jwt_token
 
-from meiduo_admin.views import users, statistical, specs, channels, images, options, skus, permissions, groups
+from meiduo_admin.views import users, statistical, specs, channels, images, options, skus, permissions, groups, admin
 
 urlpatterns = [
 
@@ -38,6 +38,8 @@ urlpatterns = [
     url(r'^permission/content_types/$', permissions.PermissionViewSet.as_view({'get': 'content_type'})),
     # 查询用户权限信息
     url(r'^permission/simple/$', groups.GroupViewSet.as_view({'get': 'simple'})),
+    # 查询用户管理信息
+    url(r'^permission/groups/simple/$', admin.AdminViewSet.as_view({'get': 'simple'})),
 
 
 
@@ -60,6 +62,8 @@ router.register('skus', skus.SkusViewSet, base_name='skus')
 router.register('permission/perms', permissions.PermissionViewSet , base_name='perms')
 # 用户组管理
 router.register('permission/groups', groups.GroupViewSet, base_name='groups')
+# 管理员管理
+router.register('permission/admins', admin.AdminViewSet, base_name='admin')
 # 导入到原有路由列表中
 urlpatterns += router.urls
 
