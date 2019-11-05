@@ -12,7 +12,7 @@ class AdminViewSet(ModelViewSet):
     # 父类方法需要调用序列化器
     serializer_class = AdminSerializer
     # c查询集属性
-    queryset = User.objects.filter(is_staff=True)
+    queryset = User.objects.filter(is_staff=True).order_by('id')
     # 权限属性
     permission_classes = [IsAdminUser]
 

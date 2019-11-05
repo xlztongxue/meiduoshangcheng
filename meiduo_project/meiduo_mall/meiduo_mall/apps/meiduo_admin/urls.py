@@ -2,7 +2,8 @@ from django.conf.urls import url
 from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import obtain_jwt_token
 
-from meiduo_admin.views import users, statistical, specs, channels, images, options, skus, permissions, groups, admin
+from meiduo_admin.views import users, statistical, specs, channels, images, options, skus, permissions, groups, admin, \
+    orders
 
 urlpatterns = [
 
@@ -58,7 +59,9 @@ router.register('goods/channels', channels.ChannelsViewSet, base_name='channels'
 router.register('specs/options', options.OptionsViewSet, base_name='options')
 # SKU表管理
 router.register('skus', skus.SkusViewSet, base_name='skus')
-# 权限管理permission/content_types
+# 订单管理
+router.register('orders', orders.OrderViewSet, base_name='orders')
+# 权限管理
 router.register('permission/perms', permissions.PermissionViewSet , base_name='perms')
 # 用户组管理
 router.register('permission/groups', groups.GroupViewSet, base_name='groups')
