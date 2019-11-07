@@ -3,7 +3,9 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from goods.models import SPUSpecification, SPU
-from meiduo_admin.serializers.specs import SpecsSerialzier, SPUSerializer
+from meiduo_admin.serializers.specs import SpecsSerialzier
+from meiduo_admin.serializers.spus import SPUSerializer
+
 
 class SpecsViewSet(ModelViewSet):
     """规格商品的增删改查"""

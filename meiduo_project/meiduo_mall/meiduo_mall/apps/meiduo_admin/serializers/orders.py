@@ -22,7 +22,7 @@ class SKUSimpleSerializer(serializers.ModelSerializer):
 
 class OrderSKUSerializer(serializers.ModelSerializer):
     """订单商品序列化器类"""
-    # 关联对象的嵌套序列化
+    # 多层序列化嵌套返回
     sku = SKUSimpleSerializer(label='SKU商品')
 
     class Meta:
@@ -34,6 +34,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     """订单详情序列化器类"""
     # 关联对象的嵌套序列化
     user = serializers.StringRelatedField(label='下单用户')
+    # 序列化嵌套返回
     skus = OrderSKUSerializer(label='订单商品', many=True)
 
     create_time = serializers.DateTimeField(label='下单时间', format='%Y-%m-%d %H:%M:%S')

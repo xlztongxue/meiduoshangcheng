@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import obtain_jwt_token
 
 from meiduo_admin.views import users, statistical, specs, channels, images, options, skus, permissions, groups, admin, \
-    orders
+    orders, spus, brands
 
 urlpatterns = [
 
@@ -27,6 +27,12 @@ urlpatterns = [
     url(r'goods/simple/$', specs.SpecsViewSet.as_view({'get': 'simple'})),
     # 用户管理图片表搜素路由
     url(r'skus/simple/$', images.ImagesViewSet.as_view({'get': 'simple'})),
+    # 查询品牌信息
+    url(r'goods/brands/simple/$', spus.SPUViewSet.as_view({'get': 'simple'})),
+    # 查询分类ID信息
+    url(r'goods/channel/categories/$', spus.SPUViewSet.as_view({'get': 'get_category'})),
+    # 查询商品ID信息
+    url(r'goods/channel/categories/(?P<pk>\d+)/$', spus.SPUViewSet.as_view({'get': 'get_categories'})),
     # 用户频道组名搜索
     url(r'goods/channel_types/$', channels.ChannelsViewSet.as_view({'get': 'get_channel_types'})),
     # 用户分类ID搜索
@@ -59,6 +65,10 @@ router.register('goods/channels', channels.ChannelsViewSet, base_name='channels'
 router.register('specs/options', options.OptionsViewSet, base_name='options')
 # SKU表管理
 router.register('skus', skus.SkusViewSet, base_name='skus')
+# SPU表管理
+router.register('goods', spus.SPUViewSet, base_name='spus')
+# 品牌管理
+router.register('goods/brands', brands.BrandsViewSet, base_name='brands')
 # 订单管理
 router.register('orders', orders.OrderViewSet, base_name='orders')
 # 权限管理

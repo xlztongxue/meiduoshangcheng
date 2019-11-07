@@ -10,14 +10,8 @@ class SpecsSerialzier(serializers.ModelSerializer):
     spu_id = serializers.IntegerField()
     class Meta:
         model = SPUSpecification
-        fields = ('__all__')
+        fields = '__all__'
 
-
-class SPUSerializer(serializers.ModelSerializer):
-    """SPU序列化器"""
-    class Meta:
-        model = SPU
-        fields = ('__all__')
 
 
 

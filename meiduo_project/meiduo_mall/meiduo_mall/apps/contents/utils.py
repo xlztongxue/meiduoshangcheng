@@ -35,5 +35,4 @@ def get_categories():
                 cat2.sub_cats.append(cat3)
             # 将二级类别添加到一级类别
             categories[group_id]['sub_cats'].append(cat2)
-
     return categories

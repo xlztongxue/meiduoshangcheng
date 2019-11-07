@@ -1,3 +1,4 @@
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -24,7 +25,6 @@ class ChannelsViewSet(ModelViewSet):
         ser =  ChannelGroupSerializer(channel_type, many=True)
         # 返回结果
         return Response(ser.data)
-
 
     def get_first_categories(self, request):
         """查询一级分类ID"""
