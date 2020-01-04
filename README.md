@@ -1,2 +1,1 @@
-# meiduoshangcheng
-美多商城
+Django框架搭建商城
